@@ -68,6 +68,109 @@
       return;
     }
   }
+#elif defined MY_ENCODER
+  // 功能： 实现左右电机的脉冲计数
+  // 1. 定义计数器
+  volatile long left_cnt = 0L;
+  volatile long right_cnt = 0L;
+
+  // 2.初始化
+  void initEncoder() {
+    pinMode(LEFT_A, INPUT);
+    pinMode(LEFT_B, INPUT);
+    pinMode(RIGHT_A, INPUT);
+    pinMode(RIGHT_B, INPUT);
+
+    attachInterrupt(2, leftEncoderEventA, CHANGE);
+    attachInterrupt(3, leftEncoderEventB, CHANGE);
+    attachInterrupt(0, rightEncoderEventA, CHANGE);
+    attachInterrupt(1, rightEncoderEventB, CHANGE);
+  }
+  // 3.编写中断回调函数
+    void leftEncoderEventA() {
+      //2倍频计数实现
+      //手动旋转电机一圈，输出结果为 一圈脉冲数 * 减速比 * 2
+      if(digitalRead(LEFT_A) == HIGH) {
+        if(digitalRead(LEFT_B) == HIGH) {  //A 高 B 高
+          left_cnt++;  
+        } else {  //A 高 B 低
+          left_cnt--;  
+        }
+      } else {
+        if(digitalRead(LEFT_B) == LOW){  //A 低 B 低
+          left_cnt++;  
+        } else {  //A 低 B 高
+          left_cnt--;              
+        }  
+      }
+    }
+
+    void leftEncoderEventB() {
+      if(digitalRead(LEFT_B) == HIGH){
+        if(digitalRead(LEFT_A) == LOW){//B 高 A 低
+          left_cnt++;
+        } else {//B 高 A 高
+          left_cnt--;            
+        }
+      } else {
+        if(digitalRead(LEFT_A) == HIGH){//B 低 A 高
+          left_cnt++;
+        } else {//B 低 A 低
+          left_cnt--;            
+        }
+      }
+    }
+
+    void rightEncoderEventA() {
+      //2倍频计数实现
+      //手动旋转电机一圈，输出结果为 一圈脉冲数 * 减速比 * 2
+      if(digitalRead(RIGHT_A) == HIGH) {
+        if(digitalRead(RIGHT_B) == HIGH) {  //A 高 B 高
+          right_cnt++;  
+        } else {  //A 高 B 低
+          right_cnt--;  
+        }
+      } else {
+        if(digitalRead(RIGHT_B) == LOW){  //A 低 B 低
+          right_cnt++;  
+        } else {  //A 低 B 高
+          right_cnt--;              
+        }  
+      }
+    }
+
+    void rightEncoderEventB() {
+      if(digitalRead(RIGHT_B) == HIGH){
+        if(digitalRead(RIGHT_A) == LOW){//B 高 A 低
+          right_cnt++;
+        } else {//B 高 A 高
+          right_cnt--;            
+        }
+      } else {
+        if(digitalRead(RIGHT_A) == HIGH){//B 低 A 高
+          right_cnt++;
+        } else {//B 低 A 低
+          right_cnt--;            
+        }
+      }
+    }
+
+  // 4.实现编码器数据读取和重置的函数
+  long readEncoder(int i) {
+    if (i == LEFT) return left_cnt;
+    else return right_cnt;
+  }
+
+  void resetEncoder(int i) {
+    if (i == LEFT){
+      left_cnt=0L;
+      return;
+    } else { 
+      right_cnt=0L;
+      return;
+    }
+  }
+
 #else
   #error A encoder driver must be selected!
 #endif
