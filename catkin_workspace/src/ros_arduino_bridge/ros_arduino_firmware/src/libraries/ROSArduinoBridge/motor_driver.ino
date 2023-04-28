@@ -86,6 +86,42 @@
     setMotorSpeed(LEFT, leftSpeed);
     setMotorSpeed(RIGHT, rightSpeed);
   }
+#elif defined AT8236_MOTOR_DRIVER
+// 初始化
+void initMotorController() {
+  pinMode(LEFT_FORWARD_DIR, OUTPUT);
+  pinMode(LEFT_FORWARD_PWM, OUTPUT);
+  pinMode(RIGHT_FORWARD_DIR, OUTPUT);
+  pinMode(RIGHT_FORWARD_PWM, OUTPUT);
+}
+
+// 设置单个电机的转速
+void setMotorSpeed(int i, int spd) {
+  unsigned char reverse = 0;
+
+  if (spd < 0) {
+    spd = -spd;
+    reverse = 1;
+  }
+  if (spd > 255) 
+    spd = 255;
+  
+  if (i == LEFT) { 
+    if      (reverse == 0) { analogWrite(LEFT_FORWARD_PWM, spd); analogWrite(LEFT_FORWARD_DIR, 0); }
+    else if (reverse == 1) { analogWrite(LEFT_BACK_PWM, spd); analogWrite(LEFT_BACK_DIR, 0); }
+  }
+  else /*if (i == RIGHT) //no need for condition*/ {
+    if      (reverse == 0) { analogWrite(RIGHT_FORWARD_PWM, spd); analogWrite(RIGHT_FORWARD_DIR, 0); }
+    else if (reverse == 1) { analogWrite(RIGHT_BACK_PWM, spd); analogWrite(RIGHT_BACK_DIR, 0); }
+  }
+}
+
+// 设置两个电机的速度
+void setMotorSpeeds(int leftSpeed, int rightSpeed) {
+  setMotorSpeed(LEFT, leftSpeed);
+  setMotorSpeed(RIGHT, rightSpeed);
+}
+
 #else
   #error A motor driver must be selected!
 #endif
