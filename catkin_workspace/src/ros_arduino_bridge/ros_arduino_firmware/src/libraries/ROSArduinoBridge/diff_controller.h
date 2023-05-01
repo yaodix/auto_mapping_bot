@@ -27,16 +27,15 @@ typedef struct {
   int ITerm;                    //integrated term
 
   long output;                    // last motor setting
-}
-SetPointInfo;
+}SetPointInfo;
 
 SetPointInfo leftPID, rightPID;
 
 /* PID Parameters */
-int Kp = 20;
-int Kd = 12;
-int Ki = 0;
-int Ko = 50;
+float Kp = 0.04;
+float Ki = 0.00001;
+float Kd = 0.06;
+float Ko = 1.0;
 
 unsigned char moving = 0; // is the base in motion?
 
@@ -71,9 +70,15 @@ void doPID(SetPointInfo * p) {
   int input;
 
   //Perror = p->TargetTicksPerFrame - (p->Encoder - p->PrevEnc);
+  // 实时速度 = 当前编码器计数 - 上次调试结束时的编码器计数； 单位时间 100ms
   input = p->Encoder - p->PrevEnc;
+  // 误差 = 目标值 - 当前值
   Perror = p->TargetTicksPerFrame - input;
 
+  // String withScale = "0 ";
+  // withScale += input;
+  // withScale += " 500";
+  // Serial.println(withScale);  
 
   /*
   * Avoid derivative kick and allow tuning changes,
@@ -84,8 +89,10 @@ void doPID(SetPointInfo * p) {
   // p->PrevErr = Perror;
   output = (Kp * Perror - Kd * (input - p->PrevInput) + p->ITerm) / Ko;
   p->PrevEnc = p->Encoder;
-
   output += p->output;
+  // Serial.print("output ");  
+  // Serial.println(output);  
+
   // Accumulate Integral error *or* Limit output.
   // Stop accumulating when output saturates
   if (output >= MAX_PWM)

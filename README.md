@@ -4,7 +4,8 @@
 ### 硬件设计
 
 ### 软件设计
-
+文档编辑   vscode  
+下载和调试 ArduinoIDE 打开 catkin_workspace/src/ros_arduino_bridge/ros_arduino_firmware/src/libraries/ROSArduinoBridge
 
 ## ROS键盘控制小车移动
 

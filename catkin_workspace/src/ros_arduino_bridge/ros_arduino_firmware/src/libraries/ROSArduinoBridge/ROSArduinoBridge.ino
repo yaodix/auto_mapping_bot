@@ -105,8 +105,8 @@
   /* PID parameters and functions */
   #include "diff_controller.h"
 
-  /* Run the PID loop at 30 times per second */
-  #define PID_RATE 100     // Hz
+  /* Run the PID loop at 10 times per second */
+  #define PID_RATE 10     // Hz
 
   /* Convert the rate into an interval */
   const int PID_INTERVAL = 1000 / PID_RATE; 
@@ -116,7 +116,7 @@
 
   /* Stop the robot if it hasn't received a movement command
    in this number of milliseconds */
-  #define AUTO_STOP_INTERVAL 2000
+  #define AUTO_STOP_INTERVAL 3000
   long lastMotorCommand = AUTO_STOP_INTERVAL;
 #endif
 
