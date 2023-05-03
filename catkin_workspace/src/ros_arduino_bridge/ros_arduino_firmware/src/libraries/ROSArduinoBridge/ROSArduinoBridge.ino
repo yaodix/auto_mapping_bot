@@ -116,7 +116,7 @@
 
   /* Stop the robot if it hasn't received a movement command
    in this number of milliseconds */
-  #define AUTO_STOP_INTERVAL 3000
+  #define AUTO_STOP_INTERVAL 2000
   long lastMotorCommand = AUTO_STOP_INTERVAL;
 #endif
 
@@ -226,11 +226,11 @@ int runCommand() {
        pid_args[i] = atoi(str);
        i++;
     }
-    Kp = pid_args[0];
-    Kd = pid_args[1];
-    Ki = pid_args[2];
-    Ko = pid_args[3];
-    Serial.println("OK");
+    // Kp = pid_args[0];
+    // Kd = pid_args[1];
+    // Ki = pid_args[2];
+    // Ko = pid_args[3];
+    Serial.println("legacy");
     break;
 #endif
   default:

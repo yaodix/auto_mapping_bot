@@ -27,15 +27,17 @@ typedef struct {
   int ITerm;                    //integrated term
 
   long output;                    // last motor setting
-}SetPointInfo;
+  float Kp = 0.0;
+  float Ki = 0.0;
+  float Kd = 0.0;
+  float Ko = 1.0;
 
-SetPointInfo leftPID, rightPID;
+} SetPointInfo;
+
+SetPointInfo leftPID;
+SetPointInfo rightPID;
 
 /* PID Parameters */
-float Kp = 0.04;
-float Ki = 0.00001;
-float Kd = 0.06;
-float Ko = 1.0;
 
 unsigned char moving = 0; // is the base in motion?
 
@@ -54,6 +56,10 @@ void resetPID(){
    leftPID.output = 0;
    leftPID.PrevInput = 0;
    leftPID.ITerm = 0;
+   leftPID.Kp = 0.03;
+   leftPID.Ki = 0.001;
+   leftPID.Kd = 0.05;
+   leftPID.Ko = 1.0;
 
    rightPID.TargetTicksPerFrame = 0.0;
    rightPID.Encoder = readEncoder(RIGHT);
@@ -61,6 +67,11 @@ void resetPID(){
    rightPID.output = 0;
    rightPID.PrevInput = 0;
    rightPID.ITerm = 0;
+   rightPID.Kp = 0.045;
+   rightPID.Ki = 0.001;
+   rightPID.Kd = 0.06;
+   rightPID.Ko = 1.0;
+
 }
 
 /* PID routine to compute the next motor commands */
@@ -87,11 +98,9 @@ void doPID(SetPointInfo * p) {
   */
   //output = (Kp * Perror + Kd * (Perror - p->PrevErr) + Ki * p->Ierror) / Ko;
   // p->PrevErr = Perror;
-  output = (Kp * Perror - Kd * (input - p->PrevInput) + p->ITerm) / Ko;
+  output = (p->Kp * Perror - p->Kd * (input - p->PrevInput) + p->ITerm) / p->Ko;
   p->PrevEnc = p->Encoder;
   output += p->output;
-  // Serial.print("output ");  
-  // Serial.println(output);  
 
   // Accumulate Integral error *or* Limit output.
   // Stop accumulating when output saturates
@@ -103,7 +112,7 @@ void doPID(SetPointInfo * p) {
   /*
   * allow turning changes, see http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-tuning-changes/
   */
-    p->ITerm += Ki * Perror;
+    p->ITerm += p->Ki * Perror;
 
   p->output = output;
   p->PrevInput = input;
