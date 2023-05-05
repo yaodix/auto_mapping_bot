@@ -7,7 +7,7 @@ port: /dev/ttyACM0
 baud: 57600
 timeout: 0.1  # 上下位机通信超时，unit: s
 
-rate: 50
+rate: 50         # 系统执行的休眠频率
 sensorstate_rate: 10
 
 use_base_controller: True
@@ -18,9 +18,9 @@ base_frame: base_footprint
 
 # === Robot drivetrain parameters
 wheel_diameter: 0.044  # 车轮直径， unit: m
-wheel_track: 0.095    # 轮间距
+wheel_track: 0.095    # 轮间距 unit: m
 encoder_resolution: 1400  #编码器精度(一圈的脉冲数 * 倍频 * 减速比)
-#gear_reduction: 1.0
+gear_reduction: 1.0
 #motors_reversed: True
 
 # === PID parameters
