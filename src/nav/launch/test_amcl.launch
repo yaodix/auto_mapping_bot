@@ -1,0 +1,7 @@
+<launch>
+    <!-- 测试amcl 定位节点 -->
+    <!-- 依赖于地图 -->
+    <include file="${find nav}/launch/map_load.launch" />
+    <!-- 启动AMCL节点 -->
+    <include file="$(find nav)/launch/amcl.launch" />
+</launch>

@@ -1,0 +1,10 @@
+<launch>
+    <!-- 运行地图服务器，加载地图-->
+    <include file="${find nav}/launch/map_load.launch" />
+    <!-- 启动AMCL节点 -->
+    <include file="$(find nav)/launch/amcl.launch" />
+
+    <!-- 运行move_base节点 -->
+    <include file="$(find nav)/launch/move_base.launch" />
+
+</launch>
